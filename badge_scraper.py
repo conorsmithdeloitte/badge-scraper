@@ -92,23 +92,47 @@ def respond():
         #badge = test_root.find_element(By.CLASS_NAME, 'card__header-title')
 
         #NOTE: The below print statement shows what the full root string looks like
-        #print(shadow_content.text)
+        print(shadow_content.text)
 
         #SECTION: Parse raw result to get the badge / point values
-        total_new_lines = 0
-        badge_and_point_new_line_location = 0
+        # total_new_lines = 0
+        # badge_and_point_new_line_location = 0
+        # number_of_badges = ''
+        # number_of_points = ''
+        # for x in shadow_content.text:
+        #     if x == '\n':
+        #         total_new_lines += 1
+        # for x in shadow_content.text:
+        #     if x == '\n':
+        #         badge_and_point_new_line_location += 1
+        #     elif badge_and_point_new_line_location == total_new_lines - 6:
+        #         number_of_badges += x
+        #     elif badge_and_point_new_line_location == total_new_lines - 4:
+        #         number_of_points += x
+        
+        #UPDATED CODE TO MAKE IT MORE DYNAMIC\
+        l = []
+        item = ''
+        for x in shadow_content.text:
+            if x == '\n':
+                l.append(item)
+                item = ''
+            else:
+                item += x
+        print('testing array',l)
+        arr = l
         number_of_badges = ''
         number_of_points = ''
-        for x in shadow_content.text:
-            if x == '\n':
-                total_new_lines += 1
-        for x in shadow_content.text:
-            if x == '\n':
-                badge_and_point_new_line_location += 1
-            elif badge_and_point_new_line_location == total_new_lines - 6:
-                number_of_badges += x
-            elif badge_and_point_new_line_location == total_new_lines - 4:
-                number_of_points += x
+        for i in range(len(arr)):
+            print('range',i+1, len(arr))
+            if i + 1 == len(arr):
+                break
+            elif arr[i + 1] == 'Badges':
+                number_of_badges = arr[i]
+            elif arr[i + 1] == 'Points':
+                number_of_points = arr[i]
+            
+            
 
         #SECTION: Print final result
         response["Badges"] = number_of_badges
