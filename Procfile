@@ -1,1 +1,1 @@
-web: gunicorn badge-scraper:app
+web: gunicorn badge_scraper:app
