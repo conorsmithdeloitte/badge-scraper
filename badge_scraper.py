@@ -9,6 +9,9 @@ from selenium.webdriver import Chrome
 from selenium.webdriver import Remote
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from flask import Flask, request, jsonify
 app = Flask(__name__)
 
@@ -78,14 +81,19 @@ def respond():
     else:
         #SECTION: Variable declaration
         url = 'https://trailblazer.me/id/' + username
-        print('testing123')
 
         #SECTION: Find HTML element that contains badge / point data
         driver = webdriver.Chrome()
         driver.get(url)
-        shadow_host = driver.find_element(By.CSS_SELECTOR, '#profile-sections-container')
-        shadow_root = shadow_host.shadow_root
-        shadow_content = shadow_root.find_element(By.CLASS_NAME, 'root')
+        delay = 100 # seconds
+        try:
+            shadow_host = WebDriverWait(driver, delay).until(EC.presence_of_element_located(((By.CSS_SELECTOR, '#profile-sections-container'))))
+            #shadow_host = driver.find_element(By.CSS_SELECTOR, '#profile-sections-container')
+            shadow_root = shadow_host.shadow_root
+            shadow_content = shadow_root.find_element(By.CLASS_NAME, 'root')
+            print("Page is ready!")
+        except TimeoutException:
+            print("Timeout error, took too long to load")
 
         #NOTE: The goal of the below test code is to get to an element further down in the hierarchy so I don't have to string parse for the badge
         #test_root = shadow_content.shadow_root
@@ -124,7 +132,6 @@ def respond():
         number_of_badges = ''
         number_of_points = ''
         for i in range(len(arr)):
-            print('range',i+1, len(arr))
             if i + 1 == len(arr):
                 break
             elif arr[i + 1] == 'Badges':
@@ -148,7 +155,7 @@ def respond():
 @app.route('/')
 def index():
     # A welcome message to test our server
-    return "<h1>testaWelcome to the badge scraper API!</h1>"
+    return "<h1>Welcome to the badge scraper API!</h1>"
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
