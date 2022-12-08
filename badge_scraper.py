@@ -40,7 +40,7 @@ def respond():
             #SECTION: Find HTML element that contains badge / point data
             driver = webdriver.Chrome()
             driver.get(url)
-            delay = 100 # seconds
+            delay = 4 # seconds
             try:
                 shadow_host = WebDriverWait(driver, delay).until(EC.presence_of_element_located(((By.CSS_SELECTOR, '#profile-sections-container'))))
                 #shadow_host = driver.find_element(By.CSS_SELECTOR, '#profile-sections-container')
