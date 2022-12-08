@@ -67,7 +67,7 @@ def respond():
             number_of_badges = ''
             number_of_points = ''
             for i in range(len(arr)): 
-                if arr[i].__contains__('Refresh the page'): # check to confirm whether we need to run the code again and reload the page
+                if arr[i].__contains__('Refresh the page') or arr[i].__contains__('Loading'): # check to confirm whether we need to run the code again and reload the page
                     loaded = False
                     break
                 if i + 1 == len(arr):
