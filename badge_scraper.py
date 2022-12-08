@@ -21,66 +21,70 @@ def respond():
     print(f"Username: {username}")
 
     response = {}
-    loaded = False
-    count = 0
-
+    flag = True
 
     #Check if the user sent a name at all
     if not username:
         response["ERROR"] = "No username provided"
     else:
-        while loaded == False and count < 3: #continue to run if scraper doesn't pull right data, but limit reruns to 3 to avoid infinite loops
-            #SECTION: Variable declaration
-            loaded = True
-            url = 'https://trailblazer.me/id/' + username
+        
+        #SECTION: Variable declaration
+        
+        url = 'https://trailblazer.me/id/' + username
 
-            #SECTION: Find HTML element that contains badge / point data
-            driver = webdriver.Chrome()
-            driver.get(url)
-            delay = 4 #seconds
-            try:
-                shadow_host = WebDriverWait(driver, delay).until(EC.presence_of_element_located(((By.CSS_SELECTOR, '#profile-sections-container'))))
-                shadow_root = shadow_host.shadow_root
-                shadow_content = shadow_root.find_element(By.CLASS_NAME, 'root')
-                print("Page contents are received")
-            except TimeoutException:
-                print("Timeout error, took too long to load")
+        #SECTION: Find HTML element that contains badge / point data
+        driver = webdriver.Chrome()
+        driver.get(url)
+        delay = 30 #seconds
 
-            #NOTE: The below print statement shows what the full root string looks like
-            print(shadow_content.text)
+        try:
+            shadow_host = WebDriverWait(driver, delay).until(EC.presence_of_element_located(((By.CSS_SELECTOR, '#profile-sections-container'))))
+            shadow_root = shadow_host.shadow_root
+            shadow_content = shadow_root.find_element(By.CLASS_NAME, 'root')
+            print("Page contents are received")
+        except TimeoutException:
+            print("Timeout error, took too long to load")
 
-            #SECTION: Parse raw result to get the badge / point values
-            l = []
-            item = ''
-            for x in shadow_content.text:
-                if x == '\n':
-                    l.append(item)
-                    item = ''
-                else:
-                    item += x
-            print('Array Response: ',l)
-            arr = l
-            number_of_badges = ''
-            number_of_points = ''
-            for i in range(len(arr)): 
-                if arr[i].__contains__('Refresh the page') or arr[i].__contains__('Loading'): #check to confirm whether we need to run the code again and reload the page
-                    loaded = False
-                    break
-                if i + 1 == len(arr):
-                    break
-                elif arr[i + 1] == 'Badges':
-                    number_of_badges = arr[i]
-                elif arr[i + 1] == 'Points':
-                    number_of_points = arr[i]
-                
-            #SECTION: Save & print final result
-            response["Badges"] = number_of_badges
-            response["Points"] = number_of_points
+        #NOTE: The below print statement shows what the full root string looks like
+        print(shadow_content.text)
 
-            print('Number of Badges:', number_of_badges)
-            print('Number of Points:', number_of_points)
+        #SECTION: Parse raw result to get the badge / point values
+        l = []
+        item = ''
+        for x in shadow_content.text:
+            if x == '\n':
+                l.append(item)
+                item = ''
+            else:
+                item += x
+        print('Array Response: ',l)
+        arr = l
+        number_of_badges = ''
+        number_of_points = ''
+        for i in range(len(arr)): 
+            if i + 1 == len(arr):
+                break
+            elif arr[i + 1] == 'Badges':
+                number_of_badges = arr[i]
+            elif arr[i + 1] == 'Points':
+                number_of_points = arr[i]
 
-            count += 1
+            if arr[i].__contains__('Refresh the page') or arr[i].__contains__('Loading'):
+                flag = False #flags if we get an invalid response
+            
+        #SECTION: Save & print final result
+        response["Badges"] = number_of_badges
+        response["Points"] = number_of_points
+
+        if(flag == True):
+            response["Flag"] = 'Succeeded'
+        else:
+            response["Flag"] = 'Failed'
+
+        print('Number of Badges:', number_of_badges)
+        print('Number of Points:', number_of_points)
+        print('Flag:', flag)
+
 
     # Return the response in JSON format
     return jsonify(response)
