@@ -32,7 +32,7 @@ def respond():
     if not username:
         response["ERROR"] = "No username provided"
     else:
-        while loaded == False and count < 5: #continue to run if scraper doesn't pull right data, but limit reruns to 5 to avoid infinite loops
+        while loaded == False and count < 3: #continue to run if scraper doesn't pull right data, but limit reruns to 3 to avoid infinite loops
             #SECTION: Variable declaration
             loaded = True
             url = 'https://trailblazer.me/id/' + username
@@ -77,8 +77,6 @@ def respond():
                 elif arr[i + 1] == 'Points':
                     number_of_points = arr[i]
                 
-                
-
             #SECTION: Save & print final result
             response["Badges"] = number_of_badges
             response["Points"] = number_of_points
