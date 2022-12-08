@@ -1,7 +1,3 @@
-#NOTE: The commented out packages don't work for shadow DOM parsing
-#import requests
-#from bs4 import BeautifulSoup
-
 #SECTION: Package imports
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -13,22 +9,23 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from flask import Flask, request, jsonify
+
 app = Flask(__name__)
 
 @app.route('/trailblazer/', methods=['GET'])
 def respond():
-    # Retrieve the name from the url parameter /trailblazer/?username=
+    #Retrieve the name from the url parameter /trailblazer/?username=
     username = request.args.get("username", None)
 
-    # For debugging
-    print(f"Received: {username}")
+    #Print username
+    print(f"Username: {username}")
 
     response = {}
     loaded = False
     count = 0
 
 
-    # Check if the user sent a name at all
+    #Check if the user sent a name at all
     if not username:
         response["ERROR"] = "No username provided"
     else:
@@ -40,13 +37,12 @@ def respond():
             #SECTION: Find HTML element that contains badge / point data
             driver = webdriver.Chrome()
             driver.get(url)
-            delay = 4 # seconds
+            delay = 4 #seconds
             try:
                 shadow_host = WebDriverWait(driver, delay).until(EC.presence_of_element_located(((By.CSS_SELECTOR, '#profile-sections-container'))))
-                #shadow_host = driver.find_element(By.CSS_SELECTOR, '#profile-sections-container')
                 shadow_root = shadow_host.shadow_root
                 shadow_content = shadow_root.find_element(By.CLASS_NAME, 'root')
-                print("Page is ready!")
+                print("Page contents are received")
             except TimeoutException:
                 print("Timeout error, took too long to load")
 
@@ -62,12 +58,12 @@ def respond():
                     item = ''
                 else:
                     item += x
-            print('Array Response',l)
+            print('Array Response: ',l)
             arr = l
             number_of_badges = ''
             number_of_points = ''
             for i in range(len(arr)): 
-                if arr[i].__contains__('Refresh the page') or arr[i].__contains__('Loading'): # check to confirm whether we need to run the code again and reload the page
+                if arr[i].__contains__('Refresh the page') or arr[i].__contains__('Loading'): #check to confirm whether we need to run the code again and reload the page
                     loaded = False
                     break
                 if i + 1 == len(arr):
