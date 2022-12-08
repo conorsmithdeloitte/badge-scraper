@@ -118,7 +118,7 @@ def respond():
         #     elif badge_and_point_new_line_location == total_new_lines - 4:
         #         number_of_points += x
         
-        #UPDATED CODE TO MAKE IT MORE DYNAMIC\
+        #UPDATED CODE TO MAKE IT MORE DYNAMIC
         l = []
         item = ''
         for x in shadow_content.text:
