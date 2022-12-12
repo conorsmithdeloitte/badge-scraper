@@ -44,6 +44,8 @@ def respond():
             print("Page contents are received")
         except TimeoutException:
             print("Timeout error, took too long to load")
+        except:
+            print("Unknown issue. Double check the Trailhead ID is correct!")
 
         #NOTE: The below print statement shows what the full root string looks like
         print(shadow_content.text)
@@ -73,8 +75,15 @@ def respond():
                 flag = False #flags if we get an invalid response
             
         #SECTION: Save & print final result
+        number_of_badges = number_of_badges.replace(',','')
+        number_of_points = number_of_points.replace(',','')
         response["Badges"] = number_of_badges
         response["Points"] = number_of_points
+
+        if (number_of_badges == '' and number_of_points == ''):
+            response["IsPrivate"] = 'True'
+        else:
+            response["IsPrivate"] = 'False'
 
         if(flag == True):
             response["Flag"] = 'Succeeded'
