@@ -82,6 +82,8 @@ def respond():
 
         if (number_of_badges == '' and number_of_points == ''):
             response["IsPrivate"] = 'True'
+            response["Badges"] = '-1'
+            response["Points"] = '-1'
         else:
             response["IsPrivate"] = 'False'
 
