@@ -81,11 +81,11 @@ def respond():
         response["Points"] = number_of_points
 
         if (number_of_badges == '' and number_of_points == ''):
-            response["IsPrivate"] = 'True'
+            response["IsPrivate"] = 'true'
             response["Badges"] = '-1'
             response["Points"] = '-1'
         else:
-            response["IsPrivate"] = 'False'
+            response["IsPrivate"] = 'false'
 
         if(flag == True):
             response["Flag"] = 'Succeeded'
