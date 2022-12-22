@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from flask import Flask, request, jsonify
+import time as t
 
 app = Flask(__name__)
 
@@ -35,11 +36,12 @@ def respond():
         #SECTION: Find HTML element that contains badge / point data
         driver = webdriver.Chrome()
         driver.get(url)
-        delay = 30 #seconds
+        delay = 5 #seconds
 
         try:
             shadow_host = WebDriverWait(driver, delay).until(EC.presence_of_element_located(((By.CSS_SELECTOR, '#profile-sections-container'))))
             shadow_root = shadow_host.shadow_root
+            t.sleep(5)
             shadow_content = shadow_root.find_element(By.CLASS_NAME, 'root')
             print("Page contents are received")
         except TimeoutException:
@@ -107,6 +109,6 @@ def index():
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
+    # app.run(threaded=True, port=5000, debug=True) #temporarily commented out, this is original code
     from waitress import serve
     serve(app,host="0.0.0.0",port=5000)
-    # app.run(threaded=True, port=5000, debug=True)
