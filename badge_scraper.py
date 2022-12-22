@@ -46,8 +46,10 @@ def respond():
             print("Page contents are received")
         except TimeoutException:
             print("Timeout error, took too long to load")
+            return "Timeout error, took too long to load"
         except:
             print("Unknown issue. Double check the Trailhead ID is correct!")
+            return "Unknown issue. Double check the Trailhead ID is correct!"
 
         #NOTE: The below print statement shows what the full root string looks like
         print(shadow_content.text)
