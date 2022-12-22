@@ -36,20 +36,20 @@ def respond():
         #SECTION: Find HTML element that contains badge / point data
         driver = webdriver.Chrome()
         driver.get(url)
-        delay = 5 #seconds
+        delay = 10 #seconds
 
         try:
             shadow_host = WebDriverWait(driver, delay).until(EC.presence_of_element_located(((By.CSS_SELECTOR, '#profile-sections-container'))))
             shadow_root = shadow_host.shadow_root
-            t.sleep(5)
+            t.sleep(5) #this will make it so page won't still be loading
             shadow_content = shadow_root.find_element(By.CLASS_NAME, 'root')
             print("Page contents are received")
-        except TimeoutException:
-            print("Timeout error, took too long to load")
-            return "Timeout error, took too long to load"
+        except TimeoutException: #this scenario will hit if trailhead ID is incorrect or if page takes too long to load
+            print("Either the Trailhead ID is incorrect or the page took too long to load")
+            return "Either the Trailhead ID is incorrect or the page took too long to load"
         except:
-            print("Unknown issue. Double check the Trailhead ID is correct!")
-            return "Unknown issue. Double check the Trailhead ID is correct!"
+            print("Unknown issue")
+            return "Unknown issue"
 
         #NOTE: The below print statement shows what the full root string looks like
         print(shadow_content.text)
@@ -67,6 +67,7 @@ def respond():
         arr = l
         number_of_badges = ''
         number_of_points = ''
+        alternative_number_of_badges = ''
         for i in range(len(arr)): 
             if i + 1 == len(arr):
                 break
@@ -74,6 +75,8 @@ def respond():
                 number_of_badges = arr[i]
             elif arr[i + 1] == 'Points':
                 number_of_points = arr[i]
+            elif arr[i].__contains__(' Badges') and arr[i][:arr[i].find(' ')].isnumeric():
+                alternative_number_of_badges = arr[i][:arr[i].find(' ')]
 
             if arr[i].__contains__('Refresh the page') or arr[i].__contains__('Loading'):
                 flag = False #flags if we get an invalid response
@@ -83,6 +86,7 @@ def respond():
         number_of_points = number_of_points.replace(',','')
         response["Badges"] = number_of_badges
         response["Points"] = number_of_points
+        response["Alternative Badges"] = alternative_number_of_badges
 
         if (number_of_badges == '' and number_of_points == ''):
             response["IsPrivate"] = 'true'
@@ -98,6 +102,7 @@ def respond():
 
         print('Number of Badges:', number_of_badges)
         print('Number of Points:', number_of_points)
+        print('Number of Alternative Badges:', alternative_number_of_badges)
         print('Flag:', flag)
 
 
