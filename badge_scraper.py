@@ -39,14 +39,16 @@ def respond():
         delay = 10 #seconds
 
         try:
-            shadow_host = WebDriverWait(driver, delay).until(EC.presence_of_element_located(((By.CSS_SELECTOR, '#profile-sections-container'))))
+            shadow_host = WebDriverWait(driver, delay).until(EC.visibility_of_element_located(((By.CSS_SELECTOR, '#profile-sections-container'))))
             shadow_root = shadow_host.shadow_root
-            t.sleep(5) #this will make it so page won't still be loading
+            t.sleep(3) #this will make it so page won't still be loading
             shadow_content = shadow_root.find_element(By.CLASS_NAME, 'root')
             print("Page contents are received")
         except TimeoutException: #this scenario will hit if trailhead ID is incorrect or if page takes too long to load
             print("Either the Trailhead ID is incorrect or the page took too long to load")
-            return "Either the Trailhead ID is incorrect or the page took too long to load"
+            response["Flag"] = 'Failed'
+            response["Reason"] = "Either the Trailhead ID is incorrect or the page took too long to load"
+            return jsonify(response)
         except:
             print("Unknown issue")
             return "Unknown issue"
@@ -67,7 +69,7 @@ def respond():
         arr = l
         number_of_badges = ''
         number_of_points = ''
-        alternative_number_of_badges = ''
+        alternative_number_of_badges = '0'
         for i in range(len(arr)): 
             if i + 1 == len(arr):
                 break
@@ -84,9 +86,10 @@ def respond():
         #SECTION: Save & print final result
         number_of_badges = number_of_badges.replace(',','')
         number_of_points = number_of_points.replace(',','')
-        response["Badges"] = number_of_badges
+        alternative_number_of_badges = alternative_number_of_badges.replace(',','')
+        #response["Badges"] = number_of_badges
+        response["Badges"] = alternative_number_of_badges
         response["Points"] = number_of_points
-        response["Alternative Badges"] = alternative_number_of_badges
 
         if (number_of_badges == '' and number_of_points == ''):
             response["IsPrivate"] = 'true'
@@ -95,10 +98,11 @@ def respond():
         else:
             response["IsPrivate"] = 'false'
 
-        if(flag == True):
-            response["Flag"] = 'Succeeded'
-        else:
-            response["Flag"] = 'Failed'
+        response['Flag'] = 'Succeeded'
+        # if(flag == True):
+        #     response["Flag"] = 'Succeeded'
+        # else:
+        #     response["Flag"] = 'Failed'
 
         print('Number of Badges:', number_of_badges)
         print('Number of Points:', number_of_points)
