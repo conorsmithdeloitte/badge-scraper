@@ -93,8 +93,8 @@ def respond():
         number_of_badges = number_of_badges.replace(',','')
         number_of_points = number_of_points.replace(',','')
         alternative_number_of_badges = alternative_number_of_badges.replace(',','')
-        #response["Badges"] = number_of_badges
-        response["Badges"] = alternative_number_of_badges
+        response["Badges"] = number_of_badges
+        #response["Badges"] = alternative_number_of_badges
         response["Points"] = number_of_points
 
         if (number_of_badges == '' and number_of_points == ''):
