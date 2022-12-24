@@ -13,6 +13,10 @@ import time as t
 
 app = Flask(__name__)
 
+@app.errorhandler(404) 
+def invalid_route(e): 
+    return "Invalid route."
+
 @app.route('/trailblazer/', methods=['GET'])
 def respond():
     #Retrieve the name from the url parameter /trailblazer/?username=
@@ -30,7 +34,6 @@ def respond():
     else:
         
         #SECTION: Variable declaration
-        
         url = 'https://trailblazer.me/id/' + username
 
         #SECTION: Find HTML element that contains badge / point data
@@ -46,8 +49,11 @@ def respond():
             print("Page contents are received")
         except TimeoutException: #this scenario will hit if trailhead ID is incorrect or if page takes too long to load
             print("Either the Trailhead ID is incorrect or the page took too long to load")
+            response["Badges"] = '0'
+            response["Points"] = '0'
             response["Flag"] = 'Failed'
-            response["Reason"] = "Either the Trailhead ID is incorrect or the page took too long to load"
+            response["IsPrivate"] = 'false'
+            response["IsURLInvalid"] = 'true'
             return jsonify(response)
         except:
             print("Unknown issue")
@@ -99,10 +105,7 @@ def respond():
             response["IsPrivate"] = 'false'
 
         response['Flag'] = 'Succeeded'
-        # if(flag == True):
-        #     response["Flag"] = 'Succeeded'
-        # else:
-        #     response["Flag"] = 'Failed'
+        response['IsURLInvalid'] = 'false'
 
         print('Number of Badges:', number_of_badges)
         print('Number of Points:', number_of_points)
