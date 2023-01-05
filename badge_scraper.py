@@ -101,10 +101,11 @@ def respond():
         else:
             response["IsPrivate"] = 'false'
 
-        if (flag):
-            response['Flag'] = 'Succeeded'
-        else:
-            response['Flag'] = 'Failed'
+        # if (flag):
+        #     response['Flag'] = 'Succeeded'
+        # else:
+        #     response['Flag'] = 'Failed'
+        response['Flag'] = 'Succeeded'
         response['IsURLInvalid'] = 'false'
 
         print('Number of Badges:', number_of_badges)
