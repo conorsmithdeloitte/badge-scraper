@@ -58,10 +58,7 @@ def respond():
         except:
             print("Unknown issue")
             return "Unknown issue"
-
-        #NOTE: The below print statement shows what the full root string looks like
-        print(shadow_content.text)
-
+        
         #SECTION: Parse raw result to get the badge / point values
         l = []
         item = ''
@@ -71,7 +68,7 @@ def respond():
                 item = ''
             else:
                 item += x
-        print('Array Response: ',l)
+        print('Scraped Response: ',l)
         arr = l
         number_of_badges = ''
         number_of_points = ''
@@ -93,8 +90,8 @@ def respond():
         number_of_badges = number_of_badges.replace(',','')
         number_of_points = number_of_points.replace(',','')
         alternative_number_of_badges = alternative_number_of_badges.replace(',','')
-        response["Badges"] = number_of_badges
-        #response["Badges"] = alternative_number_of_badges
+        #response["Badges"] = number_of_badges
+        response["Badges"] = alternative_number_of_badges
         response["Points"] = number_of_points
 
         if (number_of_badges == '' and number_of_points == ''):
