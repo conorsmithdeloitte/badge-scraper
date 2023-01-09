@@ -37,7 +37,7 @@ def respond():
         url = 'https://trailblazer.me/id/' + username
 
         #SECTION: Find HTML element that contains badge / point data
-        driver = webdriver.Chrome()
+        driver = webdriver.Chrome() 
         driver.get(url)
         delay = 10 #seconds
 
