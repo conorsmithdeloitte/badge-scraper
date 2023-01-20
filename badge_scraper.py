@@ -27,6 +27,7 @@ def respond():
 
     response = {}
     flag = True
+    alternative_flag = False
 
     #Check if the user sent a name at all
     if not username:
@@ -82,7 +83,8 @@ def respond():
                 number_of_points = arr[i]
             elif arr[i].__contains__(' Badges') and arr[i][:arr[i].find(' ')].isnumeric():
                 alternative_number_of_badges = arr[i][:arr[i].find(' ')]
-
+            if arr[i].__contains__('Filter'):
+                alternative_flag = True #flags if we get a valid alternative badge response
             if arr[i].__contains__('Refresh the page') or arr[i].__contains__('Loading'):
                 flag = False #flags if we get an invalid response
             
@@ -90,8 +92,12 @@ def respond():
         number_of_badges = number_of_badges.replace(',','')
         number_of_points = number_of_points.replace(',','')
         alternative_number_of_badges = alternative_number_of_badges.replace(',','')
-        #response["Badges"] = number_of_badges
-        response["Badges"] = alternative_number_of_badges
+
+        if (number_of_badges == '0' and alternative_number_of_badges != '0'):
+            response["Badges"] = alternative_number_of_badges
+        else:
+            response["Badges"] = number_of_badges
+        
         response["Points"] = number_of_points
 
         if (number_of_badges == '' and number_of_points == ''):
@@ -101,11 +107,12 @@ def respond():
         else:
             response["IsPrivate"] = 'false'
 
-        # if (flag):
-        #     response['Flag'] = 'Succeeded'
-        # else:
-        #     response['Flag'] = 'Failed'
-        response['Flag'] = 'Succeeded'
+        if (flag or alternative_flag or number_of_badges != '0' or number_of_points != '0' or alternative_number_of_badges != '0'):
+            response['Flag'] = 'Succeeded' #need all of the above checks to minimize the chances of getting "Failed" when it's successful
+        else:
+            response['Flag'] = 'Failed'
+        
+        #response['Flag'] = 'Succeeded'
         response['IsURLInvalid'] = 'false'
 
         print('Number of Badges:', number_of_badges)
@@ -127,3 +134,17 @@ if __name__ == '__main__':
     # app.run(threaded=True, port=5000, debug=True) #temporarily commented out, this is original code
     from waitress import serve
     serve(app,host="0.0.0.0",port=5000)
+
+# Scenarios
+# 	- If alternative badge works and badge / points don't
+# 		- Then, nullify points and use alternative badge
+# 		- NOTE: In this scenario, badges and points will be 0 and alternative badge won't be 0 if it didn't work
+# 	- If alternative badge doesn't work and badge / points do
+# 		- Use the regular badge / points
+# 	- If alternative badge and badge / points work
+# 		- Use the regular badge / points
+# 	- If neither alternative badge or badge / points work
+# 		- Identify by whether there's refresh the page or loading AND there's NO "Filter" AND badges are 0 in the scraped response 
+#       (note: sometimes points are still received when it says to refresh the page because it can be saying that for a different part of the page, 
+#       but this check should still work in nearly all cases). Additionally, worst case is it marks batch as false when it shouldn't 
+#       (if person actually has 0 badges and "refresh the page" shows up on a different part of the page)
