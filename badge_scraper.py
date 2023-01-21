@@ -85,7 +85,9 @@ def respond():
                 alternative_number_of_badges = arr[i][:arr[i].find(' ')]
             if arr[i].__contains__('Filter'):
                 alternative_flag = True #flags if we get a valid alternative badge response
-            if arr[i].__contains__('Refresh the page') or arr[i].__contains__('Loading'):
+            # if arr[i].__contains__('Refresh the page') or arr[i].__contains__('Loading'): # commenting this out since this check isn't needed now
+            #     flag = False #flags if we get an invalid response
+            if arr[i].__contains__('Refresh the page') and arr[i + 2] == 'Badges': # need to monitor this because if site changes this code needs to be fixed
                 flag = False #flags if we get an invalid response
             
         #SECTION: Save & print final result
@@ -136,7 +138,9 @@ if __name__ == '__main__':
     serve(app,host="0.0.0.0",port=5000)
 
 # Scenarios
-# 	- If alternative badge works and badge / points don't
+# 	- Scraped response returns "Loading"
+#       - Ignore this, if it's truly not working, then it should say to refresh the page in the line directly before number of badges / points 
+#   - If alternative badge works and badge / points don't
 # 		- Then, nullify points and use alternative badge
 # 		- NOTE: In this scenario, badges and points will be 0 and alternative badge won't be 0 if it didn't work
 # 	- If alternative badge doesn't work and badge / points do
