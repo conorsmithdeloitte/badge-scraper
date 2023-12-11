@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from flask import Flask, request, jsonify
 import time as t
+import os
 
 app = Flask(__name__)
 
@@ -38,6 +39,12 @@ def respond():
         url = 'https://www.salesforce.com/trailblazer/' + username
 
         #SECTION: Find HTML element that contains badge / point data
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--no-sandbox")
+        driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
         driver = webdriver.Chrome() 
         driver.get(url)
         delay = 10 #seconds
