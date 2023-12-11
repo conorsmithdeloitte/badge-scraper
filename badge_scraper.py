@@ -35,7 +35,7 @@ def respond():
     else:
         
         #SECTION: Variable declaration
-        url = 'https://trailblazer.me/id/' + username
+        url = 'https://www.salesforce.com/trailblazer/' + username
 
         #SECTION: Find HTML element that contains badge / point data
         driver = webdriver.Chrome() 
